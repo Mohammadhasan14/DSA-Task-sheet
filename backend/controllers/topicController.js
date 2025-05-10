@@ -17,15 +17,17 @@ exports.getAllTopics = async (req, res) => {
                     status: userSub?.status || 'pending'
                 };
             });
-            console.log("topic", topic)
-            console.log("topic.toObject()", topic.toObject())
+            // console.log("topic", topic)
+            // console.log("topic.toObject()", topic.toObject())
             return {
                 ...topic.toObject(),
                 status: userProgress?.status || 'pending',
                 subtopics: subtopicsWithStatus
             };
         });
-        res.json(enrichedTopics);
+        console.log("enrichedTopics", enrichedTopics);
+
+        res.json({ data: enrichedTopics });
     } catch (err) {
         res.status(500).json({ msg: 'Server error' });
     }
@@ -33,40 +35,52 @@ exports.getAllTopics = async (req, res) => {
 
 exports.getProgressReport = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
-        if (!user) return res.status(404).json({ msg: 'User not found' });
-
-        const topics = await Topic.find();
-        const doneTopicIds = user.progress
-            .filter(p => p.status === 'done')
-            .map(p => p.topicId.toString());
-
-        const report = {
-            Easy: { total: 0, done: 0 },
-            Medium: { total: 0, done: 0 },
-            Hard: { total: 0, done: 0 }
-        };
-
-        topics.forEach(topic => {
-            topic.subtopics.forEach(sub => {
-                if (['Easy', 'Medium', 'Hard'].includes(sub.level)) {
-                    report[sub.level].total++;
-                    if (doneTopicIds.includes(topic._id.toString())) {
-                        report[sub.level].done++;
-                    }
-                }
-            });
+      const user = await User.findById(req.user.id);
+      if (!user) return res.status(404).json({ msg: 'User not found' });
+  
+      const topics = await Topic.find();
+  
+      const doneSubTopicIds = new Set();
+  
+      user.progress.forEach(p => {
+        p.subtopics?.forEach(sub => {
+          if (sub.status === 'done') {
+            doneSubTopicIds.add(sub.subTopicId.toString());
+          }
         });
-        const result = {};
-        for (const level of ['Easy', 'Medium', 'Hard']) {
-            const { total, done } = report[level];
-            result[level] = total > 0 ? ((done / total) * 100).toFixed(2) + '%' : '0%';
-        }
-        res.json(result);
+      });
+  
+      const report = {
+        Easy: { total: 0, done: 0 },
+        Medium: { total: 0, done: 0 },
+        Hard: { total: 0, done: 0 }
+      };
+  
+      topics.forEach(topic => {
+        topic.subtopics?.forEach(sub => {
+          if (['Easy', 'Medium', 'Hard'].includes(sub.level)) {
+            // console.log("sub.level if top", sub.level);
+            report[sub.level].total++;
+            if (doneSubTopicIds.has(sub._id.toString())) {
+              report[sub.level].done++;
+            }
+          }
+        });
+      });
+    //   console.log("report", report);
+      const result = {};
+      for (const level of ['Easy', 'Medium', 'Hard']) {
+        const { total, done } = report[level];
+        result[level] = total > 0 ? ((done / total) * 100).toFixed(2) + '%' : '0%';
+      }
+  
+      res.json(result);
     } catch (err) {
-        res.status(500).json({ msg: 'Server error' });
+      console.error(err);
+      res.status(500).json({ msg: 'Server error' });
     }
-};
+  };
+  
 
 exports.updateTopicStatus = async (req, res) => {
     const { topicId, subTopicId, status } = req.body;
@@ -139,7 +153,7 @@ exports.updateTopicStatus = async (req, res) => {
 
 exports.createTopic = async (req, res) => {
     const { title, subtopics } = req.body;
-
+    console.log("req.body on createTopic", req.body);
     if (!title || typeof title !== 'string') {
         return res.status(400).json({ msg: 'Topic title is required and must be a string' });
     }
@@ -159,6 +173,7 @@ exports.createTopic = async (req, res) => {
         const topic = await Topic.create({ title, subtopics });
         res.status(201).json(topic);
     } catch (err) {
+        console.log("err on createTopic", err);
         res.status(500).json({ msg: 'Failed to create topic' });
     }
 };
