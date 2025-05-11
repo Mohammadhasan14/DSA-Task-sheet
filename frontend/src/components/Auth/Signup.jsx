@@ -29,15 +29,10 @@ export default function Signup() {
       });
 
       const payload = await res.json();
-      console.log("payload",payload);
+      // console.log("payload",payload);
       
       if (!res.ok) {
-        if (payload.errors) {
-          payload.errors.forEach(({ field, message }) => {
-            setError(field, { type: 'server', message });
-          });
-        }
-        throw new Error(payload.message || 'Signup failed');
+        throw new Error(payload.msg || 'Signup failed');
       }
 
       navigate('/login', { replace: true });
@@ -54,7 +49,7 @@ export default function Signup() {
       sx={{
         maxWidth: 400,
         mx: 'auto',
-        mt: 8,
+        mt: 18,
         p: 3,
         border: 1,
         borderColor: 'divider',

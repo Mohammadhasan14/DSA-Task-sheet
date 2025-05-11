@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Accordion, AccordionSummary, AccordionDetails,
     Table, TableHead, TableRow, TableCell, TableBody,
@@ -9,7 +9,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 const TopicAccordion = ({ topic, handleStatusChange }) => {
     const total = topic.subtopics.length;
     const done = topic.subtopics.filter(sub => sub.status === 'done').length;
-    console.log("topic", topic);
+    useEffect(() => {
+        console.log("topic in useEffect", topic);
+    }, [topic]);
     return (
         <Accordion sx={{ mb: 2, borderRadius: 2, boxShadow: 3 }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -38,6 +40,15 @@ const TopicAccordion = ({ topic, handleStatusChange }) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
+                        {topic.subtopics.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={8} align="center">
+                                    <Typography variant="body2" color="textSecondary">
+                                        No subtopics available.
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        )}
                         {topic.subtopics.map((sub) => (
                             <TableRow key={sub._id}>
                                 <TableCell>

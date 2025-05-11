@@ -50,17 +50,20 @@ export default function Navbar() {
                     </Tabs>
                 </Box>
 
-                {!isAuth && <Button
-                    color="inherit"
-                    onClick={() => navigate(isAuth ? '/signup' : '/signup')}
-                    sx={{ mr: 2 }}
-                >
-                    Signup
-                </Button>}
-
-                <Button color="inherit" onClick={handleAuthClick}>
-                    {isAuth ? 'Logout' : 'Login'}
-                </Button>
+                {pathname.startsWith('/login') ?
+                    <>
+                        {!isAuth && <Button
+                            color="inherit"
+                            onClick={() => navigate(isAuth ? '/signup' : '/signup')}
+                            // sx={{ mr: 2 }}
+                        >
+                            Signup
+                        </Button>}
+                    </> :
+                    <Button color="inherit" onClick={handleAuthClick}>
+                        {isAuth ? 'Logout' : 'Login'}
+                    </Button>
+                }
             </Toolbar>
         </AppBar>
     );

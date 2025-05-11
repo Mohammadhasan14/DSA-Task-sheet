@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Container, CircularProgress, Box, Typography } from '@mui/material';
 import TopicCreationForm from '../components/Topics/TopicCreationForm';
-import TopicAccordion from '../components/Topics/TopicAccordion'; 
+import TopicAccordion from '../components/Topics/TopicAccordion';
+import { useAuth } from '../AuthContext';
 
 export default function Topics() {
   const [topics, setTopics] = useState([]);
@@ -10,6 +11,7 @@ export default function Topics() {
   const [subtopics, setSubtopics] = useState([
     { title: '', level: 'Easy', youtubeLink: '', leetcodeLink: '', codeforcesLink: '', articleLink: '' }
   ]);
+  const { logout } = useAuth();
 
   const authData = JSON.parse(localStorage.getItem('DSA-Sheet-auth'));
   const token = authData?.token;
@@ -21,6 +23,12 @@ export default function Topics() {
       const res = await fetch('http://localhost:3000/api/topics', {
         headers: { Authorization: `Bearer ${token}` }
       });
+      console.log("res", res);
+      if (res.status === 401 || res.status === 404) {
+        logout();
+        return;
+      }
+
       const json = await res.json();
       setTopics(json.data || []);
     } catch (err) {
@@ -38,6 +46,7 @@ export default function Topics() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
+
         body: JSON.stringify({
           topicId,
           subTopicId,
@@ -118,7 +127,11 @@ export default function Topics() {
           handleCreateTopic={handleCreateTopic}
         />
       )}
-
+      {topics.length === 0 && (
+        <Typography variant="body1" color="text.secondary">
+          No topics available. Please check back later.
+        </Typography>
+      )}
       {topics.map((topic) => (
         <TopicAccordion key={topic._id} topic={topic} handleStatusChange={handleStatusChange} />
       ))}

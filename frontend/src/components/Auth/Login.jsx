@@ -33,12 +33,7 @@ export default function Login() {
             console.log("payload login", payload);
 
             if (!res.ok) {
-                if (payload.errors) {
-                    payload.errors.forEach(({ field, message }) =>
-                        setError(field, { type: 'server', message })
-                    );
-                }
-                throw new Error(payload.message || 'Login failed');
+                throw new Error(payload.msg || 'Login failed');
             }
 
             login(payload);
@@ -46,6 +41,7 @@ export default function Login() {
 
             navigate('/profile', { replace: true });
         } catch (err) {
+            console.log('Login error:', err);
             setServerError(err.message);
         }
     };
@@ -58,7 +54,7 @@ export default function Login() {
             sx={{
                 maxWidth: 400,
                 mx: 'auto',
-                mt: 8,
+                mt: 18,
                 p: 3,
                 border: 1,
                 borderColor: 'divider',

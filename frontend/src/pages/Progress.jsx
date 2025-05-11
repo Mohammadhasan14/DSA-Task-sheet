@@ -7,10 +7,12 @@ import {
   Paper,
   Stack
 } from '@mui/material';
+import { useAuth } from '../AuthContext';
 
 export default function Progress() {
   const [progressData, setProgressData] = useState({});
   const token = JSON.parse(localStorage.getItem('DSA-Sheet-auth'))?.token;
+  const { logout } = useAuth();
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -18,6 +20,12 @@ export default function Progress() {
         const res = await fetch('http://localhost:3000/api/topics/progress-report', {
           headers: { Authorization: `Bearer ${token}` },
         });
+
+        if (res.status === 401 || res.status === 404) {
+          logout();
+          return;
+        }
+
         const data = await res.json();
         setProgressData(data);
       } catch (err) {
