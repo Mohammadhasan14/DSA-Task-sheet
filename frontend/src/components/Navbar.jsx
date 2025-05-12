@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Tabs, Tab, Button, Box } from '@mui/material';
+import { AppBar, Toolbar, Tabs, Tab, Button, Box, useTheme, useMediaQuery } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../AuthContext';
 
@@ -8,7 +8,8 @@ export default function Navbar() {
     const { pathname } = useLocation();
     const [tabIndex, setTabIndex] = useState(false);
     const { isAuth, logout } = useAuth();
-
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
         if (pathname.startsWith('/profile')) setTabIndex(0);
@@ -27,7 +28,7 @@ export default function Navbar() {
     const handleAuthClick = () => {
         if (isAuth) {
             localStorage.removeItem('DSA-Sheet-auth');
-            logout()
+            logout();
             navigate('/');
         } else {
             navigate('/login');
@@ -35,7 +36,7 @@ export default function Navbar() {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{ backgroundColor: theme.palette.primary.main }}>
             <Toolbar>
                 <Box sx={{ flexGrow: 1 }}>
                     <Tabs
@@ -43,27 +44,41 @@ export default function Navbar() {
                         onChange={handleTabChange}
                         textColor="inherit"
                         indicatorColor="secondary"
+                        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     >
-                        {isAuth && <Tab label="Profile" />}
-                        {isAuth && <Tab label="Topics" />}
-                        {isAuth && <Tab label="Progress" />}
+                        {isAuth && <Tab label="Profile" sx={{ fontWeight: 'bold', '&.Mui-selected': { color: theme.palette.secondary.main } }} />}
+                        {isAuth && <Tab label="Topics" sx={{ fontWeight: 'bold', '&.Mui-selected': { color: theme.palette.secondary.main } }} />}
+                        {isAuth && <Tab label="Progress" sx={{ fontWeight: 'bold', '&.Mui-selected': { color: theme.palette.secondary.main } }} />}
                     </Tabs>
                 </Box>
 
-                {pathname.startsWith('/login') ?
+                {pathname.startsWith('/login') ? (
                     <>
-                        {!isAuth && <Button
-                            color="inherit"
-                            onClick={() => navigate(isAuth ? '/signup' : '/signup')}
-                            // sx={{ mr: 2 }}
-                        >
-                            Signup
-                        </Button>}
-                    </> :
-                    <Button color="inherit" onClick={handleAuthClick}>
+                        {!isAuth && (
+                            <Button
+                                color="inherit"
+                                onClick={() => navigate('/signup')}
+                                sx={{ mr: 2, fontWeight: 'bold', backgroundColor: theme.palette.secondary.main, '&:hover': { backgroundColor: theme.palette.secondary.dark } }}
+                            >
+                                Signup
+                            </Button>
+                        )}
+                    </>
+                ) : (
+                    <Button
+                        color="inherit"
+                        onClick={handleAuthClick}
+                        sx={{
+                            fontWeight: 'bold',
+                            backgroundColor: isAuth ? theme.palette.error.main : theme.palette.success.main,
+                            '&:hover': {
+                                backgroundColor: isAuth ? theme.palette.error.dark : theme.palette.success.dark,
+                            },
+                        }}
+                    >
                         {isAuth ? 'Logout' : 'Login'}
                     </Button>
-                }
+                )}
             </Toolbar>
         </AppBar>
     );
