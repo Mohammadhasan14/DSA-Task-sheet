@@ -29,7 +29,7 @@ export default function Navbar() {
         if (isAuth) {
             localStorage.removeItem('DSA-Sheet-auth');
             logout();
-            navigate('/');
+            navigate('/login');
         } else {
             navigate('/login');
         }

@@ -13,7 +13,7 @@ export default function AppRoutes() {
 
     return (    
         <Routes>
-            <Route index element={isAuth ? <Navigate to="/profile" /> : <Login />} />
+            <Route index element={isAuth ? <Navigate to="/profile" /> : <Navigate to="/login" />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
 
