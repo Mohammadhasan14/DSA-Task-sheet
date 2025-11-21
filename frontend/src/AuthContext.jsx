@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(localStorage.getItem('DSA-Sheet-auth'));
 
   const login = (authData) => {
     localStorage.setItem('DSA-Sheet-auth', JSON.stringify({

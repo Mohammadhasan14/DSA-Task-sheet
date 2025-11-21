@@ -11,11 +11,12 @@ import ProtectedComponent from './components/ProtectedComponent';
 export default function AppRoutes() {
     const { isAuth } = useAuth();
 
-    return (    
+    return (
         <Routes>
             <Route index element={isAuth ? <Navigate to="/profile" /> : <Navigate to="/login" />} />
-            <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Signup />} />
+
+            <Route path="login" element={isAuth ? <Navigate to="/profile" /> : <Login />} />
+            <Route path="signup" element={isAuth ? <Navigate to="/profile" /> : <Signup />} />
 
             <Route
                 path="/"
