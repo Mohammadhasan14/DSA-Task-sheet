@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Container, CircularProgress, Box, Typography } from '@mui/material';
+import { Container, CircularProgress, Box, Typography, useTheme, Paper, alpha } from '@mui/material';
 import TopicCreationForm from '../components/Topics/TopicCreationForm';
 import TopicAccordion from '../components/Topics/TopicAccordion';
 import { useAuth } from '../AuthContext';
+import {
+  MenuBook,
+  TrendingUp,
+  Psychology
+} from '@mui/icons-material';
 
 export default function Topics() {
   const [topics, setTopics] = useState([]);
@@ -12,6 +17,7 @@ export default function Topics() {
     { title: '', level: 'Easy', youtubeLink: '', leetcodeLink: '', codeforcesLink: '', articleLink: '' }
   ]);
   const { logout } = useAuth();
+  const theme = useTheme();
 
   const authData = JSON.parse(localStorage.getItem('DSA-Sheet-auth'));
   const token = authData?.token;
@@ -111,9 +117,90 @@ export default function Topics() {
     );
   }
 
+  const completedTopics = topics.reduce((count, topic) => {
+    const completedSubtopics = topic.subtopics.filter(sub => sub.status === 'done').length;
+    return count + (completedSubtopics === topic.subtopics.length ? 1 : 0);
+  }, 0);
+
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Topics</Typography>
+      <Box sx={{ textAlign: 'center', mb: 6 }}>
+        <Typography
+          variant="h3"
+          gutterBottom
+          sx={{
+            fontWeight: 'bold',
+            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 2
+          }}
+        >
+          <MenuBook fontSize="large" />
+          DSA Topics
+        </Typography>
+        <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto', mb: 2 }}>
+          Master Data Structures and Algorithms through curated learning paths
+        </Typography>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, flexWrap: 'wrap' }}>
+          <Paper
+            sx={{
+              p: 2,
+              minWidth: 120,
+              textAlign: 'center',
+              background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.primary.main, 0.05)} 100%)`,
+              borderRadius: 3,
+            }}
+          >
+            <Typography variant="h4" fontWeight="bold" color="primary.main">
+              {topics.length}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Total Topics
+            </Typography>
+          </Paper>
+
+          <Paper
+            sx={{
+              p: 2,
+              minWidth: 120,
+              textAlign: 'center',
+              background: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.1)} 0%, ${alpha(theme.palette.success.main, 0.05)} 100%)`,
+              borderRadius: 3,
+            }}
+          >
+            <Typography variant="h4" fontWeight="bold" color="success.main">
+              {completedTopics}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Completed
+            </Typography>
+          </Paper>
+
+          <Paper
+            sx={{
+              p: 2,
+              minWidth: 120,
+              textAlign: 'center',
+              background: `linear-gradient(135deg, ${alpha(theme.palette.warning.main, 0.1)} 0%, ${alpha(theme.palette.warning.main, 0.05)} 100%)`,
+              borderRadius: 3,
+            }}
+          >
+            <Typography variant="h4" fontWeight="bold" color="warning.main">
+              {topics.length - completedTopics}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              In Progress
+            </Typography>
+          </Paper>
+        </Box>
+      </Box>
+
 
       {isAdmin && (
         <TopicCreationForm
