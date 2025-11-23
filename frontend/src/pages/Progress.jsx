@@ -4,8 +4,6 @@ import {
   Typography,
   Box,
   LinearProgress,
-  Paper,
-  Stack,
   Grid,
   Card,
   CardContent,
@@ -22,6 +20,9 @@ import {
   Speed
 } from '@mui/icons-material';
 import { API_URL } from '../utils/url';
+import Loader from '../components/Global/Loader';
+
+const CARD_MIN_HEIGHT = 200; 
 
 export default function Progress() {
   const [progressData, setProgressData] = useState({});
@@ -79,31 +80,28 @@ export default function Progress() {
 
   const calculateOverallProgress = () => {
     const values = levels.map(level => getValue(progressData[level.label]));
-    return values.reduce((sum, value) => sum + value, 0) / values.length;
+    if (values.length === 0) return 0; 
+    const sum = values.reduce((sum, value) => sum + value, 0);
+    return sum / values.length;
   };
 
   const overallProgress = calculateOverallProgress();
 
   if (loading) {
     return (
-      <Container sx={{ mt: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-        <Box textAlign="center">
-          <CircularProgress size={60} thickness={4} sx={{ color: theme.palette.primary.main, mb: 2 }} />
-          <Typography variant="h6" color="text.secondary">
-            Loading your progress...
-          </Typography>
-        </Box>
-      </Container>
+      <Loader loaderText="Loading your progress..." theme={theme} />
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box textAlign="center" mb={6}>
+    <Container maxWidth="lg" sx={{ mt: { xs: 2, sm: 4 }, mb: { xs: 2, sm: 4 }, p: { xs: 1, sm: 2 } }}> 
+      
+      <Box textAlign="center" mb={{ xs: 3, md: 6 }}>
         <Typography 
-          variant="h4" 
+          variant={ 'h4' } 
           gutterBottom 
           sx={{ 
+            fontSize: { xs: '1.8rem', sm: '2.5rem' }, 
             fontWeight: 'bold',
             background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
             backgroundClip: 'text',
@@ -113,26 +111,31 @@ export default function Progress() {
         >
           Progress Dashboard
         </Typography>
-        <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
+        <Typography variant="h6" color="text.secondary" sx={{ 
+            maxWidth: 600, 
+            mx: 'auto',
+            fontSize: { xs: '1rem', sm: '1.25rem' } 
+          }}
+        >
           Track your DSA learning journey and monitor your improvement across different difficulty levels
         </Typography>
       </Box>
 
       <Card 
         sx={{ 
-          mb: 4, 
+          mb: { xs: 3, md: 4 }, 
           background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.secondary.main, 0.1)} 100%)`,
           border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
           borderRadius: 4,
           boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.1)}`,
         }}
       >
-        <CardContent sx={{ p: 4, textAlign: 'center' }}>
+        <CardContent sx={{ p: { xs: 2, sm: 4 }, textAlign: 'center' }}>
           <Box sx={{ position: 'relative', display: 'inline-flex', mb: 2 }}>
             <CircularProgress
               variant="determinate"
               value={overallProgress}
-              size={120}
+              size={{ xs: 100, sm: 120 }} 
               thickness={4}
               sx={{ color: theme.palette.primary.main }}
             />
@@ -148,7 +151,12 @@ export default function Progress() {
                 justifyContent: 'center',
               }}
             >
-              <Typography variant="h5" component="div" fontWeight="bold">
+              <Typography 
+                variant="h5" 
+                component="div" 
+                fontWeight="bold"
+                sx={{ fontSize: { xs: '1.4rem', sm: '1.5rem' } }} 
+              >
                 {Math.round(overallProgress)}%
               </Typography>
             </Box>
@@ -163,7 +171,7 @@ export default function Progress() {
         </CardContent>
       </Card>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ display: 'flex', justifyContent: 'center', width: '100%', m: 0 }}>
         {levels.map(({ label, color, icon, description }) => {
           const progressValue = getValue(progressData[label]);
           const getColor = (value) => {
@@ -173,10 +181,13 @@ export default function Progress() {
           };
 
           return (
-            <Grid item xs={12} md={4} key={label}>
+            <Grid item xs={12} sm={6} md={4} key={label} sx={{ width: 'auto' }}> 
               <Card 
                 sx={{ 
+                  minHeight: CARD_MIN_HEIGHT,
                   height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column', 
                   transition: 'all 0.3s ease-in-out',
                   '&:hover': {
                     transform: 'translateY(-4px)',
@@ -186,7 +197,7 @@ export default function Progress() {
                   border: `1px solid ${alpha(theme.palette[color].main, 0.1)}`,
                 }}
               >
-                <CardContent sx={{ p: 3 }}>
+                <CardContent sx={{ p: { xs: 2, sm: 3 }, flexGrow: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <Box 
                       sx={{ 
