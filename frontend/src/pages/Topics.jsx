@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Container, CircularProgress, Box, Typography, useTheme, Paper, alpha } from '@mui/material';
+import { Container, Box, Typography, useTheme, Paper, alpha } from '@mui/material';
 import TopicCreationForm from '../components/Topics/TopicCreationForm';
 import TopicAccordion from '../components/Topics/TopicAccordion';
 import { useAuth } from '../AuthContext';
 import {
-  MenuBook,
-  TrendingUp,
-  Psychology
+  MenuBook
 } from '@mui/icons-material';
 import { API_URL } from '../utils/url';
+import Loader from '../components/Global/Loader';
 
 export default function Topics() {
   const [topics, setTopics] = useState([]);
@@ -112,9 +111,7 @@ export default function Topics() {
 
   if (loading) {
     return (
-      <Box sx={{ mt: 5, display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </Box>
+      <Loader loaderText="Loading topics..." theme={theme} />
     );
   }
 
@@ -141,7 +138,6 @@ export default function Topics() {
             gap: 2
           }}
         >
-          <MenuBook fontSize="large" />
           DSA Topics
         </Typography>
         <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto', mb: 2 }}>

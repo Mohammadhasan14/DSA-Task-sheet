@@ -24,21 +24,21 @@ export default function Dashboard() {
   return (
     <Box
       sx={{
-        // minHeight: '100vh',
-        // background: 'linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%)',
+        minHeight: 'calc(100vh - 200px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        p: 9,
+        
+        p: { xs: 3, md: 5 }, 
       }}
     >
       <Container maxWidth="sm">
         <Card
           sx={{
             borderRadius: 4,
-            boxShadow: 4,
-            p: 3,
-            // mb: 60,
+            boxShadow: 8, 
+            p: { xs: 1, sm: 3 }, 
+            width: '100%', 
           }}
         >
           <CardContent>
@@ -46,14 +46,18 @@ export default function Dashboard() {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 2,
+                gap: { xs: 1.5, sm: 2 },
                 mb: 2,
               }}
             >
-              <Avatar sx={{ bgcolor: 'primary.main' }}>
+              <Avatar sx={{ bgcolor: 'primary.main', width: { xs: 40, sm: 50 }, height: { xs: 40, sm: 50 } }}>
                 <PersonIcon />
               </Avatar>
-              <Typography variant="h5" fontWeight="bold">
+              <Typography 
+                variant={ 'h5' }
+                fontWeight="bold"
+                sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
+              >
                 Welcome to DSA Sheet 🎯
               </Typography>
             </Box>
@@ -61,7 +65,7 @@ export default function Dashboard() {
             <Divider sx={{ mb: 2 }} />
 
             {user ? (
-              <Box sx={{ ml: 1 }}>
+              <Box sx={{ ml: { xs: 0, sm: 1 } }}>
                 <Typography variant="subtitle1" gutterBottom>
                   <strong>Username:</strong> {user.username}
                 </Typography>
