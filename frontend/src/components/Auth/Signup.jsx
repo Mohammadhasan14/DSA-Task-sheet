@@ -8,6 +8,7 @@ import {
   Alert,
 } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { API_URL } from '../../utils/url';
 
 export default function Signup() {
   const {
@@ -22,7 +23,7 @@ export default function Signup() {
   const onSubmit = async (data) => {
     setServerError('');
     try {
-      const res = await fetch('http://localhost:3000/api/auth/signup', {
+      const res = await fetch(`${API_URL}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

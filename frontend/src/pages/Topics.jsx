@@ -8,6 +8,7 @@ import {
   TrendingUp,
   Psychology
 } from '@mui/icons-material';
+import { API_URL } from '../utils/url';
 
 export default function Topics() {
   const [topics, setTopics] = useState([]);
@@ -26,7 +27,7 @@ export default function Topics() {
 
   const fetchTopics = async () => {
     try {
-      const res = await fetch('http://localhost:3000/api/topics', {
+      const res = await fetch(`${API_URL}/api/topics`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log("res", res);
@@ -46,7 +47,7 @@ export default function Topics() {
 
   const handleStatusChange = async (topicId, subTopicId, currentStatus) => {
     try {
-      await fetch('http://localhost:3000/api/topics/status', {
+      await fetch(`${API_URL}/api/topics/status`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -86,7 +87,7 @@ export default function Topics() {
 
   const handleCreateTopic = async () => {
     try {
-      await fetch('http://localhost:3000/api/topics', {
+      await fetch(`${API_URL}/api/topics`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

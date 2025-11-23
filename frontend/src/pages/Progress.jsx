@@ -21,6 +21,7 @@ import {
   EmojiEvents,
   Speed
 } from '@mui/icons-material';
+import { API_URL } from '../utils/url';
 
 export default function Progress() {
   const [progressData, setProgressData] = useState({});
@@ -33,7 +34,7 @@ export default function Progress() {
     const fetchProgress = async () => {
       try {
         setLoading(true);
-        const res = await fetch('http://localhost:3000/api/topics/progress-report', {
+        const res = await fetch(`${API_URL}/api/topics/progress-report`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

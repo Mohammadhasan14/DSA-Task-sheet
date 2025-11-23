@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext();
 
@@ -6,6 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('DSA-Sheet-auth'));
 
   const login = (authData) => {
+    // console.log("authData", authData);
     localStorage.setItem('DSA-Sheet-auth', JSON.stringify({
         token: authData.token,
         user: authData.user

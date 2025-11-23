@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../AuthContext';
+import { API_URL } from '../../utils/url';
 
 export default function Login() {
     const {
@@ -24,7 +25,7 @@ export default function Login() {
     const onSubmit = async (data) => {
         setServerError('');
         try {
-            const res = await fetch('http://localhost:3000/api/auth/login', {
+            const res = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
@@ -37,8 +38,6 @@ export default function Login() {
             }
 
             login(payload);
-            console.log("token", payload.token);
-
             navigate('/profile', { replace: true });
         } catch (err) {
             console.log('Login error:', err);
